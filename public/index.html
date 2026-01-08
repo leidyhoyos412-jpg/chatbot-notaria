@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Chatbot Notaría Bogotá</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .chatbox {
+      background: white;
+      width: 380px;
+      max-height: 600px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .header {
+      background: #3498db;
+      color: white;
+      padding: 15px;
+      font-size: 18px;
+      text-align: center;
+      font-weight: bold;
+    }
+    #chat {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #ecf0f1;
+    }
+    .message {
+      padding: 10px;
+      border-radius: 10px;
+      max-width: 80%;
+      word-wrap: break-word;
+    }
+    .user {
+      background: #2980b9;
+      color: white;
+      align-self: flex-end;
+    }
+    .bot {
+      background: #27ae60;
+      color: white;
+      align-self: flex-start;
+    }
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 5px;
+    }
+    .option-btn {
+      background: #3498db;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .option-btn:hover {
+      background: #2980b9;
+    }
+    .input-area {
+      display: flex;
+      gap: 5px;
+      padding: 10px;
+      background: #bdc3c7;
+    }
+    .input-area input {
+      flex: 1;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    .input-area button {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      background: #27ae60;
+      color: white;
+      cursor: pointer;
+    }
+    .input-area button:hover {
+      background: #2ecc71;
+    }
+  </style>
+</head>
+<body>
+
+<div class="chatbox">
+  <div class="header">🤖 Notaría Bogotá</div>
+  <div id="chat"></div>
+  <div class="input-area">
+    <input id="texto" placeholder="Escribe tu pregunta...">
+    <button onclick="enviar()">Enviar</button>
+  </div>
+</div>
+
+<script>
+const chat = document.getElementById("chat");
+
+// Función para mostrar mensajes
+function agregarMensaje(mensaje, clase) {
+  const div = document.createElement("div");
+  div.classList.add("message", clase);
+  div.innerHTML = mensaje;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+// Saludo inicial y opciones
+function saludoInicial() {
+  agregarMensaje("¡Hola! Soy el asistente de la Notaría Bogotá. ¿En qué puedo ayudarte hoy?", "bot");
+  mostrarOpciones(["Horario de atención", "Trámites de escritura", "Registro civil", "Autenticación de documentos", "Poderes", "Costos notariales"]);
+}
+
+// Mostrar botones de opciones
+function mostrarOpciones(opciones) {
+  const container = document.createElement("div");
+  container.classList.add("options");
+  opciones.forEach(opcion => {
+    const btn = document.createElement("button");
+    btn.classList.add("option-btn");
+    btn.textContent = opcion;
+    btn.onclick = () => {
+      enviar(opcion);
+      container.remove(); // quita los botones al seleccionar
+    };
+    container.appendChild(btn);
+  });
+  chat.appendChild(container);
+}
+
+// Función enviar mensaje
+async function enviar(valor=null) {
+  const textoInput = document.getElementById("texto");
+  const texto = valor || textoInput.value;
+  if (!texto) return;
+
+  agregarMensaje(texto, "user");
+  textoInput.value = "";
+
+  // Llamada al backend
+  const res = await fetch("/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ mensaje: texto })
+  });
+
+  const data = await res.json();
+  agregarMensaje(data.respuesta, "bot");
+
+  // Opciones sugeridas nuevamente después de responder
+  mostrarOpciones(["Horario de atención", "Trámites de escritura", "Registro civil", "Autenticación de documentos", "Poderes", "Costos notariales"]);
+}
+
+// Ejecutar saludo inicial al cargar
+window.onload = saludoInicial;
+</script>
+
+</body>
+</html>s
