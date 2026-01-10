@@ -1,90 +1,84 @@
-import express from "express";
-import cors from "cors";
+const express = require("express");
+const cors = require("cors");
 
 const app = express();
-app.get("/", (req, res) => {
-  res.send("🤖 Chatbot Notaría 21 Bogotá activo y funcionando");
-});
-
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-function generarRespuesta(mensaje) {
+/* ===============================
+   RESPUESTAS OFICIALES NOTARÍA 21
+================================ */
+function responder(mensaje) {
   mensaje = mensaje.toLowerCase();
 
-  let respuesta =
-    "Bienvenido(a) a la Notaría 21 del Círculo de Bogotá.\n\n" +
-    "Gracias por comunicarse con nosotros. Este canal brinda información general sobre nuestros trámites notariales.\n\n" +
-    "Puede consultar sobre escrituras, autenticaciones, registros civiles, costos, horarios o contactos.";
-
-  if (mensaje.includes("escritura") || mensaje.includes("protocolo")) {
-    respuesta =
-      "Para información sobre escrituras públicas o trámites de protocolo, por favor comuníquese a:\n\n" +
-      "📧 protocolo@notaria21bogota.com\n" +
-      "☎ Teléfono: 601 746 1014 ext. 121\n\n" +
-      "Allí atenderán y resolverán sus inquietudes.";
+  if (mensaje.includes("autentic")) {
+    return `📄 *Autenticaciones Notaría 21*
+📧 autenticaciones@notaria21bogota.com
+📞 Tel: 601 746 1014 ext. 126
+Los costos están regulados por ley.`;
   }
 
-  else if (mensaje.includes("autentic")) {
-    respuesta =
-      "Para información sobre autenticaciones o costos de autenticación, comuníquese a:\n\n" +
-      "📧 autenticaciones@notaria21bogota.com\n" +
-      "☎ Teléfono: 601 746 1014 ext. 126\n\n" +
-      "Allí atenderán y resolverán sus inquietudes.";
+  if (mensaje.includes("registro")) {
+    return `📜 *Registro Civil Notaría 21*
+📧 registrocivil@notaria21bogota.com
+📞 Tel: 601 746 1014 ext. 117 - 119
+
+📍 Dirección: Calle 70A No. 8-27, Bogotá
+💲 Valor copia: $10.300 (entrega mismo día en Bogotá)`;
   }
 
-  else if (mensaje.includes("liquid")) {
-    respuesta =
-      "Para información sobre liquidaciones o costos, comuníquese a:\n\n" +
-      "📧 liquidacion@notaria21bogota.com\n" +
-      "☎ Teléfono: 601 746 1014 ext. 128\n\n" +
-      "Allí atenderán y resolverán sus inquietudes.";
+  if (mensaje.includes("liquid")) {
+    return `💰 *Liquidaciones*
+📧 liquidacion@notaria21bogota.com
+📞 Tel: 601 746 1014 ext. 128`;
   }
 
-  else if (mensaje.includes("registro")) {
-    respuesta =
-      "REGISTRO CIVIL – COPIAS\n\n" +
-      "📍 En Bogotá:\n" +
-      "Valor por copia: $10.300\n" +
-      "Entrega el mismo día\n" +
-      "Dirección: Calle 70 A No. 8-27\n" +
-      "Horario: 8:00 a.m. a 5:00 p.m.\n\n" +
-      "📍 Fuera de Bogotá:\n" +
-      "Debe realizar consignación a la Cuenta Corriente Banco de Bogotá No. 500315387\n" +
-      "Titular: Libardo Benjamín Veloza Rubiano – Notario 21\n" +
-      "Valor total: $42.877\n\n" +
-      "Enviar comprobante a 📧 registrocivil@notaria21bogota.com";
+  if (mensaje.includes("direccion") || mensaje.includes("ubicacion")) {
+    return `📍 *Notaría 21 del Círculo de Bogotá*
+Calle 70A No. 8-27
+🕗 Lunes a viernes de 8:00 a.m. a 5:00 p.m.`;
   }
 
-  else if (mensaje.includes("direccion") || mensaje.includes("ubicacion")) {
-    respuesta =
-      "La Notaría 21 del Círculo de Bogotá se encuentra ubicada en:\n\n" +
-      "📍 Calle 70 A No. 8-27\n" +
-      "🕗 Horario: lunes a viernes de 8:00 a.m. a 5:00 p.m.";
+  if (
+    mensaje.includes("agente") ||
+    mensaje.includes("asesor") ||
+    mensaje.includes("humano")
+  ) {
+    return `👩‍💼 *Atención humana*
+📞 601 746 1017 / 601 746 1011
+📧 informacion@notaria21bogota.com`;
   }
 
-  else if (mensaje.includes("telefono") || mensaje.includes("contacto")) {
-    respuesta =
-      "CONTACTO GENERAL NOTARÍA 21\n\n" +
-      "☎ Teléfonos: 601 746 1017 / 601 746 1011\n" +
-      "📞 Extensiones: 117 – 119\n" +
-      "📧 radicacion@notaria21bogota.com\n" +
-      "📧 informacion@notaria21bogota.com";
-  }
+  return `🤖 *Asistente Virtual Notaría 21*
+Puedo ayudarte con:
+- Autenticaciones
+- Registro civil
+- Liquidaciones
+- Dirección y horarios
 
-  return respuesta;
+Si deseas hablar con un asesor humano, escribe *AGENTE*.`;
 }
 
-/* Web */
-app.post("/chat", (req, res) => {
-  const mensaje = req.body.mensaje || "";
-  res.json({ respuesta: generarRespuesta(mensaje) });
+/* ===============================
+   RUTAS
+================================ */
+app.get("/", (req, res) => {
+  res.send("🤖 Chatbot Notaría 21 activo");
 });
 
-/* WhatsApp (Twilio) */
+app.post("/chat", (req, res) => {
+  const mensaje = req.body.mensaje || "";
+  const respuesta = responder(mensaje);
+  res.json({ respuesta });
+});
+
+/* ===============================
+   WHATSAPP TWILIO
+================================ */
 app.post("/whatsapp", (req, res) => {
   const mensaje = req.body.Body || "";
-  const respuesta = generarRespuesta(mensaje);
+  const respuesta = responder(mensaje);
 
   res.set("Content-Type", "text/xml");
   res.send(`
@@ -94,7 +88,10 @@ app.post("/whatsapp", (req, res) => {
   `);
 });
 
+/* ===============================
+   SERVIDOR
+================================ */
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor activo en puerto ${PORT}`);
+  console.log("Servidor Notaría 21 activo en puerto", PORT);
 });
