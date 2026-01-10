@@ -2,185 +2,205 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-/* ===============================
-   INFORMACIÓN COMPLETA NOTARÍA
-================================ */
+function responder(mensaje) {
+  const texto = mensaje.toLowerCase().trim();
 
-const notariaInfo = `
-📍 NOTARÍA 21
+  /* SALUDO */
+  if (
+    texto.includes("hola") ||
+    texto.includes("buen") ||
+    texto === "menu"
+  ) {
+    return `👋 *Bienvenido a la Notaría 21 del Círculo de Bogotá*
 
-🕘 Horarios de atención:
-Lunes a Viernes: 8:00 a.m. – 4:00 p.m.
-Sábados: 8:00 a.m. – 12:00 m.
+Por favor escribe el número del trámite que deseas consultar:
 
-📄 TRÁMITES DISPONIBLES:
-
-1️⃣ Registro Civil
-- Nacimiento
-- Matrimonio
-- Defunción
-
-💰 Precios aproximados:
-• Copia registro civil: $8.000
-• Registro extemporáneo: consultar
-
-2️⃣ Autenticaciones
-- Documentos
-- Firmas
-- Huellas
-
-💰 Precio:
-• Autenticación: desde $7.000
-
-3️⃣ Poderes
-- Poder especial
-- Poder general
-
-💰 Precio:
-• Desde $35.000 (según extensión)
-
-4️⃣ Escrituras Públicas
-- Compra y venta
-- Hipoteca
-- Cancelaciones
-
-💰 Precio:
-• Según cuantía del acto
-
-5️⃣ Declaraciones Extra juicio
-- Unión marital
-- Dependencia económica
-- Testimoniales
-
-💰 Precio:
-• Desde $45.000
-
-📌 Requisitos generales:
-- Documento de identidad original
-- Copias legibles
-- Pago del trámite
-
-📲 Si no tienes claridad sobre el trámite adecuado,
-puedes solicitar ayuda directa.
-`;
-
-/* ===============================
-   RESPUESTAS INTELIGENTES
-================================ */
-
-function generarRespuesta(mensaje) {
-  const texto = mensaje.toLowerCase();
-
-  if (texto.includes("hola") || texto.includes("buenas")) {
-    return `👋 Hola, bienvenido a la Notaría 21.
-
-Puedo ayudarte con:
-• Información de trámites
-• Precios
-• Requisitos
-• Horarios
-
-Escribe el trámite que necesitas o dime:
-👉 "hablar con un agente"`;
+1️⃣ Registro Civil  
+2️⃣ Matrimonio Civil  
+3️⃣ Autenticaciones  
+4️⃣ Escrituras y bienes inmuebles  
+5️⃣ Declaraciones extrajuicio  
+6️⃣ Salida del país de menores  
+7️⃣ Liquidaciones  
+8️⃣ Protocolo  
+9️⃣ Información general y horarios  
+0️⃣ Hablar con un agente`;
   }
 
-  if (texto.includes("registro")) {
-    return `📄 REGISTRO CIVIL
+  /* 1 REGISTRO CIVIL */
+  if (texto === "1" || texto.includes("registro")) {
+    return `📄 *REGISTRO CIVIL*
 
-Realizamos:
-• Nacimiento
-• Matrimonio
-• Defunción
+📍 *Si estás en Bogotá*:
+• Valor por copia: $10.300
+• Entrega el mismo día
+• Dirección: Calle 70 A #8-27
+• Horario: 8:00 a.m. a 5:00 p.m.
 
-💰 Precios:
-• Copia: $8.000
-• Otros casos: consultar
+🌎 *Si estás fuera de Bogotá*:
+Debes consignar *$42.877* en:
 
-¿Deseas hablar con un agente?`;
+🏦 Banco de Bogotá  
+Cuenta corriente: 500315387  
+Titular: Libardo Benjamín Veloza Rubiano  
+(Notario 21 del Círculo de Bogotá)
+
+Incluye:
+• Copia: $10.300  
+• Porte correo: $12.470  
+• Comisión banco: $20.107  
+
+📧 Envía el comprobante a:
+registrocivil@notaria21bogota.com
+
+Indica:
+• Nombres y apellidos
+• Número de registro o serial
+• Dirección y teléfono
+• A nombre de quién va el envío
+
+Cada copia adicional: $10.300  
+0️⃣ Hablar con un agente`;
   }
 
-  if (texto.includes("autentic")) {
-    return `✍️ AUTENTICACIONES
+  /* 2 MATRIMONIO */
+  if (texto === "2" || texto.includes("matrimonio")) {
+    return `💍 *MATRIMONIO CIVIL*
 
-Autenticamos:
-• Firmas
-• Documentos
-• Huellas
+Requisitos generales:
+• Registro civil de nacimiento (máx. 3 meses)
+• Cédulas de ambos contrayentes
 
-💰 Precio desde $7.000
+Según el caso:
+• Divorciado: registro con nota de divorcio
+• Viudo: registro de defunción del cónyuge
+• Hijos previos: inventario solemne de bienes
 
-¿Deseas hablar con un agente?`;
+📞 Confirma requisitos:
+601 7461017 / 601 7461011  
+📧 informacion@notaria21bogota.com
+
+0️⃣ Hablar con un agente`;
   }
 
-  if (texto.includes("poder")) {
-    return `📜 PODERES NOTARIALES
+  /* 3 AUTENTICACIONES */
+  if (texto === "3" || texto.includes("autentic")) {
+    return `✍️ *AUTENTICACIONES*
 
-• Poder especial
-• Poder general
+Debes llevar:
+• Documento original
+• Cédula de ciudadanía
+• Personas jurídicas: certificado de existencia
 
-💰 Desde $35.000 (varía según contenido)
+📧 autenticaciones@notaria21bogota.com  
+📞 7461014 ext. 126
 
-¿Deseas hablar con un agente?`;
+0️⃣ Hablar con un agente`;
   }
 
-  if (texto.includes("escritura")) {
-    return `🏛️ ESCRITURAS PÚBLICAS
+  /* 4 ESCRITURAS */
+  if (texto === "4" || texto.includes("escrit")) {
+    return `🏠 *ESCRITURAS Y BIENES INMUEBLES*
 
-• Compra y venta
-• Hipoteca
-• Cancelaciones
+Requisitos comunes:
+• Certificado de tradición (≤ 60 días)
+• Impuestos al día
+• Escritura antecedente
+• Cédulas de los comparecientes
 
-💰 El valor depende del monto del acto.
+📧 notaria@notaria21bogota.com  
+📞 601 7461016
 
-¿Deseas hablar con un agente?`;
+0️⃣ Hablar con un agente`;
   }
 
-  if (texto.includes("horario")) {
-    return `🕘 HORARIOS
+  /* 5 EXTRAJUICIO */
+  if (texto === "5" || texto.includes("extraju")) {
+    return `📄 *DECLARACIÓN EXTRAJUICIO*
 
-Lunes a Viernes:
-8:00 a.m. – 4:00 p.m.
+Requisitos:
+• Cédula original
+• Registros civiles (si aplica)
+• Se realiza bajo juramento en notaría
 
-Sábados:
-8:00 a.m. – 12:00 m.`;
+0️⃣ Hablar con un agente`;
   }
 
-  if (texto.includes("precio") || texto.includes("costo")) {
-    return notariaInfo + `
+  /* 6 SALIDA DE MENORES */
+  if (texto === "6" || texto.includes("menor")) {
+    return `✈️ *SALIDA DEL PAÍS DE MENORES*
 
-¿Deseas hablar con un agente?`;
+Requisitos:
+• Cédulas de los padres
+• Registro civil del menor
+• Permiso de salida
+
+0️⃣ Hablar con un agente`;
   }
 
-  if (texto.includes("agente")) {
-    return `📲 Un agente de la notaría se comunicará contigo en breve.
-Por favor espera.`;
+  /* 7 LIQUIDACIONES */
+  if (texto === "7" || texto.includes("liquid")) {
+    return `💰 *LIQUIDACIONES*
+
+📧 liquidacin@notaria21bogota.com  
+📞 7461014 ext. 128
+
+0️⃣ Hablar con un agente`;
   }
 
-  return `ℹ️ No logré identificar tu solicitud.
+  /* 8 PROTOCOLO */
+  if (texto === "8" || texto.includes("protocolo")) {
+    return `📑 *PROTOCOLO*
 
-Puedes preguntar por:
-• Registro civil
-• Autenticaciones
-• Poderes
-• Escrituras
-• Horarios
-• Precios
+📧 protocolo@notaria21bogota.com  
+📞 7461014 ext. 121
 
-¿Deseas hablar con un agente?`;
+0️⃣ Hablar con un agente`;
+  }
+
+  /* 9 INFORMACIÓN GENERAL */
+  if (texto === "9" || texto.includes("informacion")) {
+    return `📍 *INFORMACIÓN GENERAL*
+
+📍 Dirección:
+Calle 70 A #8-27  
+Quinta Camacho – Bogotá D.C.
+
+🕘 Horario:
+Lunes a viernes: 8:00 a.m. a 5:00 p.m.
+Sábados de turno: 8:00 a.m. a 12:00 m
+
+📞 Teléfonos:
+601 7461017 – 601 7461011  
+Ext. 117 – 119
+
+📧 Correos:
+informacion@notaria21bogota.com  
+radicacion@notaria21bogota.com
+
+0️⃣ Hablar con un agente`;
+  }
+
+  /* AGENTE */
+  if (texto === "0" || texto.includes("agente")) {
+    return `📲 Gracias. Un agente de la Notaría 21 atenderá tu solicitud.`;
+  }
+
+  /* NO ENTENDIDO */
+  return `ℹ️ No entendí tu mensaje.
+
+Escribe *hola* para ver el menú nuevamente  
+o escribe *0* para hablar con un agente.`;
 }
 
-/* ===============================
-   WEBHOOK WHATSAPP (TWILIO)
-================================ */
-
+/* WHATSAPP WEBHOOK */
 app.post("/whatsapp", (req, res) => {
-  const mensajeUsuario = req.body.Body || "";
-  const respuesta = generarRespuesta(mensajeUsuario);
+  const mensaje = req.body.Body || "";
+  const respuesta = responder(mensaje);
 
   res.set("Content-Type", "text/xml");
   res.send(`
@@ -190,20 +210,11 @@ app.post("/whatsapp", (req, res) => {
   `);
 });
 
-/* ===============================
-   PRUEBA WEB
-================================ */
-
+/* PRUEBA WEB */
 app.get("/", (req, res) => {
   res.send("Chatbot Notaría 21 activo ✅");
 });
 
-/* ===============================
-   INICIO SERVIDOR
-================================ */
-
 const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log("Servidor activo en puerto " + PORT));
 
-app.listen(PORT, () => {
-  console.log("Servidor activo en puerto " + PORT);
-});
