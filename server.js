@@ -1,101 +1,209 @@
-function generarRespuesta(mensaje) {
-  mensaje = mensaje.toLowerCase();
+const express = require("express");
+const cors = require("cors");
 
-  // SALUDO
-  if (mensaje.includes("hola") || mensaje.includes("buen")) {
-    return `👋 Bienvenido a la Notaría 21 del Círculo de Bogotá.
+const app = express();
+
+app.use(cors());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
+/* ===============================
+   INFORMACIÓN COMPLETA NOTARÍA
+================================ */
+
+const notariaInfo = `
+📍 NOTARÍA 21
+
+🕘 Horarios de atención:
+Lunes a Viernes: 8:00 a.m. – 4:00 p.m.
+Sábados: 8:00 a.m. – 12:00 m.
+
+📄 TRÁMITES DISPONIBLES:
+
+1️⃣ Registro Civil
+- Nacimiento
+- Matrimonio
+- Defunción
+
+💰 Precios aproximados:
+• Copia registro civil: $8.000
+• Registro extemporáneo: consultar
+
+2️⃣ Autenticaciones
+- Documentos
+- Firmas
+- Huellas
+
+💰 Precio:
+• Autenticación: desde $7.000
+
+3️⃣ Poderes
+- Poder especial
+- Poder general
+
+💰 Precio:
+• Desde $35.000 (según extensión)
+
+4️⃣ Escrituras Públicas
+- Compra y venta
+- Hipoteca
+- Cancelaciones
+
+💰 Precio:
+• Según cuantía del acto
+
+5️⃣ Declaraciones Extra juicio
+- Unión marital
+- Dependencia económica
+- Testimoniales
+
+💰 Precio:
+• Desde $45.000
+
+📌 Requisitos generales:
+- Documento de identidad original
+- Copias legibles
+- Pago del trámite
+
+📲 Si no tienes claridad sobre el trámite adecuado,
+puedes solicitar ayuda directa.
+`;
+
+/* ===============================
+   RESPUESTAS INTELIGENTES
+================================ */
+
+function generarRespuesta(mensaje) {
+  const texto = mensaje.toLowerCase();
+
+  if (texto.includes("hola") || texto.includes("buenas")) {
+    return `👋 Hola, bienvenido a la Notaría 21.
 
 Puedo ayudarte con:
-• Registro civil
-• Autenticaciones
-• Liquidaciones y costos
-• Protocolo
-• Información general
+• Información de trámites
+• Precios
+• Requisitos
+• Horarios
 
-Escribe el trámite que deseas consultar.`;
+Escribe el trámite que necesitas o dime:
+👉 "hablar con un agente"`;
   }
 
-  // REGISTRO CIVIL
-  if (mensaje.includes("registro")) {
-    return `📄 REGISTRO CIVIL – NOTARÍA 21
+  if (texto.includes("registro")) {
+    return `📄 REGISTRO CIVIL
 
-📍 En Bogotá:
-• Valor por copia: $10.300
-• Entrega el mismo día
-• Dirección: Calle 70 A No. 8-27
-• Horario: 8:00 a.m. a 5:00 p.m.
+Realizamos:
+• Nacimiento
+• Matrimonio
+• Defunción
 
-🌍 Fuera de Bogotá:
-Debe realizar consignación por $42.877
-
-📧 Enviar comprobante y datos a:
-registrocivil@notaria21bogota.com
-
-Si deseas más de una copia, suma $10.300 por cada una.
+💰 Precios:
+• Copia: $8.000
+• Otros casos: consultar
 
 ¿Deseas hablar con un agente?`;
   }
 
-  // AUTENTICACIONES
-  if (mensaje.includes("autentic")) {
+  if (texto.includes("autentic")) {
     return `✍️ AUTENTICACIONES
 
-Para información y costos:
-📧 autenticaciones@notaria21bogota.com
-📞 7461014 ext. 126
+Autenticamos:
+• Firmas
+• Documentos
+• Huellas
+
+💰 Precio desde $7.000
 
 ¿Deseas hablar con un agente?`;
   }
 
-  // LIQUIDACIONES
-  if (mensaje.includes("liquid") || mensaje.includes("costo")) {
-    return `💰 LIQUIDACIONES Y COSTOS
+  if (texto.includes("poder")) {
+    return `📜 PODERES NOTARIALES
 
-📧 liquidacin@notaria21bogota.com
-📞 7461014 ext. 128
+• Poder especial
+• Poder general
 
-¿Deseas hablar con un agente?`;
-  }
-
-  // PROTOCOLO
-  if (mensaje.includes("protocolo")) {
-    return `📑 PROTOCOLO NOTARIAL
-
-📧 protocolo@notaria21bogota.com
-📞 7461014 ext. 121
+💰 Desde $35.000 (varía según contenido)
 
 ¿Deseas hablar con un agente?`;
   }
 
-  // RADICACIÓN / INFORMACIÓN GENERAL
-  if (mensaje.includes("radic") || mensaje.includes("informacion")) {
-    return `📬 INFORMACIÓN GENERAL
+  if (texto.includes("escritura")) {
+    return `🏛️ ESCRITURAS PÚBLICAS
 
-📞 Teléfonos:
-• 601 7461017
-• 601 7461011
-Ext. 117 – 119
+• Compra y venta
+• Hipoteca
+• Cancelaciones
 
-📧 Correos:
-• radicacion@notaria21bogota.com
-• informacion@notaria21bogota.com
+💰 El valor depende del monto del acto.
 
 ¿Deseas hablar con un agente?`;
   }
 
-  // AGENTE
-  if (mensaje.includes("agente")) {
-    return `👩‍💼👨‍💼 Para atención personalizada comunícate por los canales oficiales:
+  if (texto.includes("horario")) {
+    return `🕘 HORARIOS
 
-📞 601 7461017 / 601 7461011
-📧 informacion@notaria21bogota.com
+Lunes a Viernes:
+8:00 a.m. – 4:00 p.m.
 
-Gracias por comunicarte con la Notaría 21.`;
+Sábados:
+8:00 a.m. – 12:00 m.`;
   }
 
-  // RESPUESTA POR DEFECTO
-  return `Gracias por comunicarte con la Notaría 21 del Círculo de Bogotá.
+  if (texto.includes("precio") || texto.includes("costo")) {
+    return notariaInfo + `
 
-Escribe el trámite que deseas consultar o escribe:
-👉 hablar con un agente`;
+¿Deseas hablar con un agente?`;
+  }
+
+  if (texto.includes("agente")) {
+    return `📲 Un agente de la notaría se comunicará contigo en breve.
+Por favor espera.`;
+  }
+
+  return `ℹ️ No logré identificar tu solicitud.
+
+Puedes preguntar por:
+• Registro civil
+• Autenticaciones
+• Poderes
+• Escrituras
+• Horarios
+• Precios
+
+¿Deseas hablar con un agente?`;
 }
+
+/* ===============================
+   WEBHOOK WHATSAPP (TWILIO)
+================================ */
+
+app.post("/whatsapp", (req, res) => {
+  const mensajeUsuario = req.body.Body || "";
+  const respuesta = generarRespuesta(mensajeUsuario);
+
+  res.set("Content-Type", "text/xml");
+  res.send(`
+    <Response>
+      <Message>${respuesta}</Message>
+    </Response>
+  `);
+});
+
+/* ===============================
+   PRUEBA WEB
+================================ */
+
+app.get("/", (req, res) => {
+  res.send("Chatbot Notaría 21 activo ✅");
+});
+
+/* ===============================
+   INICIO SERVIDOR
+================================ */
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log("Servidor activo en puerto " + PORT);
+});
