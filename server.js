@@ -2,6 +2,10 @@ import express from "express";
 import cors from "cors";
 
 const app = express();
+app.get("/", (req, res) => {
+  res.send("🤖 Chatbot Notaría 21 Bogotá activo y funcionando");
+});
+
 app.use(cors());
 app.use(express.json());
 
