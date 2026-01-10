@@ -1,97 +1,101 @@
-const express = require("express");
-const cors = require("cors");
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-
-/* ===============================
-   RESPUESTAS OFICIALES NOTARÍA 21
-================================ */
-function responder(mensaje) {
+function generarRespuesta(mensaje) {
   mensaje = mensaje.toLowerCase();
 
-  if (mensaje.includes("autentic")) {
-    return `📄 *Autenticaciones Notaría 21*
-📧 autenticaciones@notaria21bogota.com
-📞 Tel: 601 746 1014 ext. 126
-Los costos están regulados por ley.`;
-  }
+  // SALUDO
+  if (mensaje.includes("hola") || mensaje.includes("buen")) {
+    return `👋 Bienvenido a la Notaría 21 del Círculo de Bogotá.
 
-  if (mensaje.includes("registro")) {
-    return `📜 *Registro Civil Notaría 21*
-📧 registrocivil@notaria21bogota.com
-📞 Tel: 601 746 1014 ext. 117 - 119
-
-📍 Dirección: Calle 70A No. 8-27, Bogotá
-💲 Valor copia: $10.300 (entrega mismo día en Bogotá)`;
-  }
-
-  if (mensaje.includes("liquid")) {
-    return `💰 *Liquidaciones*
-📧 liquidacion@notaria21bogota.com
-📞 Tel: 601 746 1014 ext. 128`;
-  }
-
-  if (mensaje.includes("direccion") || mensaje.includes("ubicacion")) {
-    return `📍 *Notaría 21 del Círculo de Bogotá*
-Calle 70A No. 8-27
-🕗 Lunes a viernes de 8:00 a.m. a 5:00 p.m.`;
-  }
-
-  if (
-    mensaje.includes("agente") ||
-    mensaje.includes("asesor") ||
-    mensaje.includes("humano")
-  ) {
-    return `👩‍💼 *Atención humana*
-📞 601 746 1017 / 601 746 1011
-📧 informacion@notaria21bogota.com`;
-  }
-
-  return `🤖 *Asistente Virtual Notaría 21*
 Puedo ayudarte con:
-- Autenticaciones
-- Registro civil
-- Liquidaciones
-- Dirección y horarios
+• Registro civil
+• Autenticaciones
+• Liquidaciones y costos
+• Protocolo
+• Información general
 
-Si deseas hablar con un asesor humano, escribe *AGENTE*.`;
+Escribe el trámite que deseas consultar.`;
+  }
+
+  // REGISTRO CIVIL
+  if (mensaje.includes("registro")) {
+    return `📄 REGISTRO CIVIL – NOTARÍA 21
+
+📍 En Bogotá:
+• Valor por copia: $10.300
+• Entrega el mismo día
+• Dirección: Calle 70 A No. 8-27
+• Horario: 8:00 a.m. a 5:00 p.m.
+
+🌍 Fuera de Bogotá:
+Debe realizar consignación por $42.877
+
+📧 Enviar comprobante y datos a:
+registrocivil@notaria21bogota.com
+
+Si deseas más de una copia, suma $10.300 por cada una.
+
+¿Deseas hablar con un agente?`;
+  }
+
+  // AUTENTICACIONES
+  if (mensaje.includes("autentic")) {
+    return `✍️ AUTENTICACIONES
+
+Para información y costos:
+📧 autenticaciones@notaria21bogota.com
+📞 7461014 ext. 126
+
+¿Deseas hablar con un agente?`;
+  }
+
+  // LIQUIDACIONES
+  if (mensaje.includes("liquid") || mensaje.includes("costo")) {
+    return `💰 LIQUIDACIONES Y COSTOS
+
+📧 liquidacin@notaria21bogota.com
+📞 7461014 ext. 128
+
+¿Deseas hablar con un agente?`;
+  }
+
+  // PROTOCOLO
+  if (mensaje.includes("protocolo")) {
+    return `📑 PROTOCOLO NOTARIAL
+
+📧 protocolo@notaria21bogota.com
+📞 7461014 ext. 121
+
+¿Deseas hablar con un agente?`;
+  }
+
+  // RADICACIÓN / INFORMACIÓN GENERAL
+  if (mensaje.includes("radic") || mensaje.includes("informacion")) {
+    return `📬 INFORMACIÓN GENERAL
+
+📞 Teléfonos:
+• 601 7461017
+• 601 7461011
+Ext. 117 – 119
+
+📧 Correos:
+• radicacion@notaria21bogota.com
+• informacion@notaria21bogota.com
+
+¿Deseas hablar con un agente?`;
+  }
+
+  // AGENTE
+  if (mensaje.includes("agente")) {
+    return `👩‍💼👨‍💼 Para atención personalizada comunícate por los canales oficiales:
+
+📞 601 7461017 / 601 7461011
+📧 informacion@notaria21bogota.com
+
+Gracias por comunicarte con la Notaría 21.`;
+  }
+
+  // RESPUESTA POR DEFECTO
+  return `Gracias por comunicarte con la Notaría 21 del Círculo de Bogotá.
+
+Escribe el trámite que deseas consultar o escribe:
+👉 hablar con un agente`;
 }
-
-/* ===============================
-   RUTAS
-================================ */
-app.get("/", (req, res) => {
-  res.send("🤖 Chatbot Notaría 21 activo");
-});
-
-app.post("/chat", (req, res) => {
-  const mensaje = req.body.mensaje || "";
-  const respuesta = responder(mensaje);
-  res.json({ respuesta });
-});
-
-/* ===============================
-   WHATSAPP TWILIO
-================================ */
-app.post("/whatsapp", (req, res) => {
-  const mensaje = req.body.Body || "";
-  const respuesta = responder(mensaje);
-
-  res.set("Content-Type", "text/xml");
-  res.send(`
-    <Response>
-      <Message>${respuesta}</Message>
-    </Response>
-  `);
-});
-
-/* ===============================
-   SERVIDOR
-================================ */
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log("Servidor Notaría 21 activo en puerto", PORT);
-});
